@@ -1,6 +1,7 @@
 import logo from './logo.svg';
 
 import './App.css';
+import React from 'react';
 
 import Login from './Components/LoginComponent/Login';
 
@@ -12,13 +13,37 @@ import Questionnaire  from './Components/QuesDashboard/Questionnaire';
 
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
-import { useState } from "react";
+import {  useState,useReducer } from "react";
+import Ref from './Components/DashboardUi/Ref';
+import {createContext} from 'react'
+import update from 'immutability-helper';
 
+
+
+export const UserRoleContext = React.createContext();
+
+const initialState = {
+
+  inputRole: [],
+
+};
+export const reducer=(state, action)=> {
+  switch (action.type) {
+      case 'UPDATE_ROLE': 
+      console.log(action.data)
+            return {
+            inputRole:action.data }
+          
+
+     default:
+          return initialState;
+  }
+}
 
 function App() {
 
-
-  const [usersName, setUsersName] = useState("Nikhil");
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const [usersName, setUsersName] = useState("Sam");
 
 
   const usersNamehandler = (value)=>{
@@ -32,7 +57,7 @@ function App() {
     // });
 
   }
-
+// const[userRole,SetUserRole]=useState('1')
   return (
 
     <div className="App">
@@ -73,27 +98,33 @@ function App() {
     {/* <Login /> */}
 
     {/* <Prac/> */}
-
+    
     <Router >
-
+    
       <div>
-
+      <UserRoleContext.Provider value={{state, dispatch}}>
       <Routes>
-
+     
+      
               <Route exact path="/" element={ <Login onChange={usersNamehandler} />} />
-
-              <Route exact path="/dashboard" element={ <MainDashboard usersName={usersName} />} />
+        
+              <Route exact path="/dashboard" element={ <MainDashboard usersName={usersName} /> } />
+             
+              {/* <Route exact path="/ref" element={ <Ref/>}  /> */}
 
               <Route exact path="/questionnaire" element={ <Questionnaire usersName={usersName} />} />
 
               {/* <Route exact path="/admin" render={(props) => <ProductAdmin {...props} auth={authProps} />} /> */}
-
+             
               </Routes>
-
+              </UserRoleContext.Provider>
+           
+      
           </div>
-
+         
 
       </Router>
+    
 
     {/* <MainDashboard /> */}
 
